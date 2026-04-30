@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { AppRoute } from '../../../const';
+import Logo from '../../../ui/logo/logo';
 
 type HeaderProps = {
   isUserAuth: boolean;
@@ -12,15 +13,7 @@ const Header = ({isUserAuth, isLoginPage}: HeaderProps): JSX.Element => {
   return (
     <header className="header">
       <div className="container container--size-l">
-        <a
-          className="logo header__logo"
-          href="index.html"
-          aria-label="Перейти на Главную"
-        >
-          <svg width="{134}" height="{52}" aria-hidden="true">
-            <use xlinkHref="#logo" />
-          </svg>
-        </a>
+        <Logo />
         <nav className="main-nav header__main-nav">
           <ul className="main-nav__list">
             <li className="main-nav__item">
@@ -44,20 +37,20 @@ const Header = ({isUserAuth, isLoginPage}: HeaderProps): JSX.Element => {
         <div className="header__side-nav">
           {!isLoginPage && (isUserAuth ?
             <a className="btn btn--accent header__side-item" href="#">
-            Выйти
+              Выйти
             </a> :
-            <a
+            <Link
               className="btn header__side-item header__login-btn"
-              href="login.html"
+              to={AppRoute.Login}
             >
-          Вход
-            </a>)}
+              Вход
+            </Link>)}
 
           <a
             className="link header__side-item header__phone-link"
             href="tel:88003335599"
           >
-        8 (000) 111-11-11
+            8 (000) 111-11-11
           </a>
         </div>
       </div>
