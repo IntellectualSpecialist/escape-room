@@ -6,8 +6,10 @@ const NotFoundPage = (): JSX.Element => (
     <Helmet>
       <title>Страница не найдена - Escape Room</title>
     </Helmet>
-    <h1>404 Not Found</h1>
-    <Link to="/">Вернуться на главную</Link>
+    <div className="container">
+      <h1>404 Not Found</h1>
+      <Link to="/">Вернуться на главную</Link>
+    </div>
   </>
 );
 

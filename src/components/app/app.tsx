@@ -28,8 +28,6 @@ const App = (): JSX.Element => (
 
           <Route path={AppRoute.Contacts} element={<ContactsPage />} />
 
-          <Route path={AppRoute.Booking} element={<BookingPage />} />
-
           <Route path={AppRoute.Booking} element={
             <PrivateRoute isAvailable={isAuth(authorizationStatus)} route={AppRoute.Login}>
               <BookingPage />
@@ -45,8 +43,9 @@ const App = (): JSX.Element => (
             </PrivateRoute>
           }
           />
+
+          <Route path='*' element={<NotFoundPage />} />
         </Route>
-        <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   </HelmetProvider>

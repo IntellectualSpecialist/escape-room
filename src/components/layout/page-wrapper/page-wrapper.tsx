@@ -5,21 +5,11 @@ import { AppRoute } from '../../../const';
 import { authorizationStatus, isAuth } from '../../../utils';
 
 const PageWrapper = (): JSX.Element => {
-// const authorizationStatus = useAppSelector(selectAuthorizationStatus);
-// const offers = useAppSelector(selectOffers);
-// const favorites = useAppSelector(selectFavorites);
-// const currentCityName = useAppSelector(selectCity);
-
-  // const currentOffers = useMemo(() => filterOffersByCity(offers, currentCityName), [offers, currentCityName]);
-
   const {pathname} = useLocation();
   const isQuestPage = Boolean(matchPath(AppRoute.Quest, pathname));
   const isBookingPage = Boolean(matchPath(AppRoute.Booking, pathname));
-  // const pageClassName = '';
   let mainClassName = 'page-content';
   let isLoginPage = false;
-  // const hasFooter = false;
-  // let shouldRenderUser = true;
 
   if (isQuestPage) {
     mainClassName = 'decorated-page quest-page';
