@@ -1,9 +1,10 @@
 import { Helmet } from 'react-helmet-async';
 import { quest } from '../../mocks/quest';
-import { QuestLevelLabel, QuestTypeLabel } from '../../const';
+import { AppRoute, QuestLevelLabel, QuestTypeLabel } from '../../const';
+import { Link } from 'react-router-dom';
 
 const QuestPage = () => {
-  const {title, level, description, type, coverImg, coverImgWebp, peopleMinMax} = quest;
+  const {id, title, level, description, type, coverImg, coverImgWebp, peopleMinMax} = quest;
 
   return (
     <>
@@ -49,12 +50,12 @@ const QuestPage = () => {
           <p className="quest-page__description">
             {description}
           </p>
-          <a
+          <Link
             className="btn btn--accent btn--cta quest-page__btn"
-            href="booking.html"
+            to={AppRoute.Booking.replace(':id', id)}
           >
             Забронировать
-          </a>
+          </Link>
         </div>
       </div>
     </>
