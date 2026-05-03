@@ -12,23 +12,18 @@ const QuestCard = ({questProp}:QuestCardProps): JSX.Element => {
   let quest: Quest;
   let date: null | Date = null;
   let time: null | string = null;
-  let contactPerson: null | string = null;
-  let phone: null | string = null;
-  let withChildren: null | boolean = null;
   let peopleCount: null | number = null;
-  let id: null | string = null;
   let address: null | string = null;
-  let coords: null | number[] = null;
 
   if (isReservation) {
     quest = questProp.quest;
-    ({date, time, contactPerson, phone, withChildren, peopleCount, id, location: {address, coords}} = questProp);
+    ({date, time, peopleCount, location: {address}} = questProp);
 
   } else {
     quest = questProp;
   }
 
-  const {id: questId, title, previewImg, previewImgWebp, level, type, peopleMinMax} = quest;
+  const {id: questId, title, previewImg, previewImgWebp, level, peopleMinMax} = quest;
 
   return (
     <div className="quest-card">

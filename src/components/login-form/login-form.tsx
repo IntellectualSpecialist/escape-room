@@ -1,4 +1,4 @@
-import { ReactEventHandler, useState } from 'react';
+import { ReactEventHandler, useCallback, useState } from 'react';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 import { LoginFormData } from '../../types';
 
@@ -21,9 +21,9 @@ const LoginForm = (): JSX.Element => {
     });
   };
 
-  const handleAgreementChange: ChangeHandler = (evt) => {
+  const handleAgreementChange: ChangeHandler = useCallback((evt) => {
     setPersonalDataAgreement(evt.currentTarget.checked);
-  };
+  }, []);
 
   return (
     <form

@@ -12,7 +12,8 @@ export const reservationQuests: ReservationQuest[] = [
     'location': {
       'address': 'Набережная реки Карповки, 5П',
       'coords': [
-        30.317359
+        59.96536433646851,
+        30.424032915448624
       ]
     },
     'quest': {

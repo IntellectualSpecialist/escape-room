@@ -15,3 +15,5 @@ export type BookingQuest = {
   location: Location;
   slots: Slots;
 }
+
+export type BookingQuestShort = Omit<BookingQuest, 'slots'>;

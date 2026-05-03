@@ -1,16 +1,16 @@
-import { ReactEventHandler, useState } from 'react';
+import { ReactEventHandler, useCallback, useState } from 'react';
 import { BookingFormData, Slots } from '../../types';
 import { convertTime, getBookingDataProperties } from '../../utils';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 
 type BookingFormProps = {
-  slots: Slots;
+  places: Slots;
   placeId: string;
 }
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
 
-const BookingForm = ({slots, placeId}: BookingFormProps): JSX.Element => {
+const BookingForm = ({places, placeId}: BookingFormProps): JSX.Element => {
   const [formData, setFormData] = useState<BookingFormData>({
     date: 'today',
     time: '',
@@ -21,7 +21,7 @@ const BookingForm = ({slots, placeId}: BookingFormProps): JSX.Element => {
     phone: '',
   });
   const [personalDataAgreement, setPersonalDataAgreement] = useState(false);
-  const {today: todayItems, tomorrow: tomorrowItems} = slots;
+  const {today: todayItems, tomorrow: tomorrowItems} = places || {};
 
   const handleFormDataChange: ChangeHandler = (evt) => {
     const {name, value, checked} = evt.currentTarget;
@@ -33,9 +33,9 @@ const BookingForm = ({slots, placeId}: BookingFormProps): JSX.Element => {
     });
   };
 
-  const handleAgreementChange: ChangeHandler = (evt) => {
+  const handleAgreementChange: ChangeHandler = useCallback((evt) => {
     setPersonalDataAgreement(evt.currentTarget.checked);
-  };
+  }, []);
 
   return (
     <form

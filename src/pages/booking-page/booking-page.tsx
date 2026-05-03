@@ -1,13 +1,20 @@
 import { Helmet } from 'react-helmet-async';
-import { slot } from '../../mocks/slots';
+import { places } from '../../mocks/places';
 import { quest } from '../../mocks/quest';
 import BookingForm from '../../components/booking-form/booking-form';
-
+import Map from '../../components/map/map';
+import { useState } from 'react';
 
 const BookingPage = (): JSX.Element => {
+  const [currentBookingId, setCurrentBookingId] = useState<string>(places[0].id);
+  const currentBooking = places.find((place) => place.id === currentBookingId);
   const {title} = quest;
-  const {id, slots, location} = slot[0];
-  const {address} = location;
+  const {slots, location} = currentBooking || {};
+  const {address} = location || {};
+
+  const handleCurrentBookingChange = (placeId: string): void => {
+    setCurrentBookingId(placeId);
+  };
 
   return (
     <>
@@ -40,15 +47,13 @@ const BookingPage = (): JSX.Element => {
         </div>
         <div className="page-content__item">
           <div className="booking-map">
-            <div className="map">
-              <div className="map__container" />
-            </div>
+            <Map markers={places} activeMarker={currentBooking} onMarkerClick={handleCurrentBookingChange} />
             <p className="booking-map__address">
               Вы&nbsp;выбрали: {address}
             </p>
           </div>
         </div>
-        {<BookingForm placeId={id} slots={slots} />}
+        {slots && <BookingForm placeId={currentBookingId} places={slots} />}
 
       </div>
     </>
