@@ -1,10 +1,6 @@
 import { Date } from '../const';
+import { Location } from './location';
 import { Quest } from './quest';
-
-export type Location = {
-    address: string;
-    coords: number[];
-  }
 
 export type ReservationQuest = {
   date: Date;

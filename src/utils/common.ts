@@ -1,7 +1,7 @@
 import { AuthorizationStatus } from '../const';
 import { Quest, ReservationQuest } from '../types';
 
-const authorizationStatus = AuthorizationStatus.Auth;
+const authorizationStatus = AuthorizationStatus.NoAuth;
 
 const isAuth = (authStatus: AuthorizationStatus): boolean => authStatus === AuthorizationStatus.Auth;
 
