@@ -28,7 +28,9 @@ const MyQuestsPage = (): JSX.Element => (
           Мои бронирования
         </h1>
       </div>
-      <CardsList quests={reservationQuests} />
+      {reservationQuests?.length ?
+        <CardsList quests={reservationQuests} /> :
+        <p>Пока ничего не забронировано.</p>}
     </div>
   </>
 );
