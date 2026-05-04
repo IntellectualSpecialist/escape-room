@@ -1,4 +1,4 @@
-import { ReactEventHandler, useCallback, useState } from 'react';
+import { ReactEventHandler, useState } from 'react';
 import { BookingFormData, Slots } from '../../types';
 import { convertTime, getBookingDataProperties } from '../../utils';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
@@ -33,9 +33,9 @@ const BookingForm = ({places, placeId}: BookingFormProps): JSX.Element => {
     });
   };
 
-  const handleAgreementChange: ChangeHandler = useCallback((evt) => {
+  const handleAgreementChange: ChangeHandler = (evt) => {
     setPersonalDataAgreement(evt.currentTarget.checked);
-  }, []);
+  };
 
   return (
     <form

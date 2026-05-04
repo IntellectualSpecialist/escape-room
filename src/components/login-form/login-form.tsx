@@ -1,4 +1,4 @@
-import { ReactEventHandler, useCallback, useState } from 'react';
+import { ReactEventHandler, useState } from 'react';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 import { LoginFormData } from '../../types';
 
@@ -21,9 +21,9 @@ const LoginForm = (): JSX.Element => {
     });
   };
 
-  const handleAgreementChange: ChangeHandler = useCallback((evt) => {
+  const handleAgreementChange: ChangeHandler = (evt) => {
     setPersonalDataAgreement(evt.currentTarget.checked);
-  }, []);
+  };
 
   return (
     <form
@@ -70,26 +70,6 @@ const LoginForm = (): JSX.Element => {
               Войти
         </button>
       </div>
-      {/* <label className="custom-checkbox login-form__checkbox">
-      <input
-        type="checkbox"
-        id="id-order-agreement"
-        name="user-agreement"
-        required
-      />
-      <span className="custom-checkbox__icon">
-        <svg width={20} height={17} aria-hidden="true">
-          <use xlinkHref="#icon-tick" />
-        </svg>
-      </span>
-      <span className="custom-checkbox__label">
-              Я&nbsp;согласен с
-        <a className="link link--active-silver link--underlined" href="#">
-                правилами обработки персональных данных
-        </a>
-              &nbsp;и пользовательским соглашением
-      </span>
-    </label> */}
       <CheckboxAgreement
         className="login-form__checkbox"
         onAgreementChange={handleAgreementChange}

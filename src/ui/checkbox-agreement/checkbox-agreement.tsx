@@ -1,4 +1,5 @@
 import { ReactEventHandler } from 'react';
+import { Link } from 'react-router-dom';
 
 type CheckboxAgreementProps = {
   className: string;
@@ -30,9 +31,9 @@ const CheckboxAgreement = ({className, onAgreementChange, isChecked}: CheckboxAg
       </span>
       <span className="custom-checkbox__label">
             Я&nbsp;согласен с{' '}
-        <a className="link link--active-silver link--underlined" href="#">
+        <Link className="link link--active-silver link--underlined" to="#">
               правилами обработки персональных данных
-        </a>
+        </Link>
             &nbsp;и пользовательским соглашением
       </span>
     </label>
