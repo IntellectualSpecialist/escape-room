@@ -5,8 +5,8 @@ import { GenreFilter, LevelFilter } from '../../types';
 import { filterByGenre, filterByLevel } from '../../utils';
 import Filters from '../../components/filters/filters';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectQuests } from '../../components/store/quests/selectors';
-import { fetchQuestsAction } from '../../components/store/api-actions';
+import { selectQuests } from '../../store/quests/selectors';
+import { fetchQuestsAction } from '../../store/api-actions';
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
 

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { NameSpace, RequestStatus } from '../../../const';
+import { NameSpace, RequestStatus } from '../../const';
 import { fetchQuestsAction } from '../api-actions';
-import { QuestsData } from '../../../types';
+import { QuestsData } from '../../types';
 
 const initialState: QuestsData = {
   quests: [],

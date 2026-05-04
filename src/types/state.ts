@@ -1,4 +1,4 @@
-import { store } from '../components/store';
+import { store } from '../store';
 import { RequestStatus } from '../const';
 import { Quest } from './quest';
 
