@@ -13,6 +13,29 @@ export enum AuthorizationStatus {
   Unknown = 'UNKNOWN',
 }
 
+export enum APIRoute {
+  Quest = '/quest',
+  Booking = '/booking',
+  Reservation = '/reservation',
+  Login = '/login',
+  Logout = '/logout',
+}
+
+export enum RequestStatus {
+  Idle = 'IDLE',
+  Loading = 'LOADING',
+  Success = 'SUCCESS',
+  Failed = 'FAILED'
+}
+
+export enum NameSpace {
+  Quests = 'QUESTS',
+  Quest = 'QUEST',
+  Booking = 'BOOKING',
+  User = 'USER',
+  Reservation = 'RESERVATION'
+}
+
 export const QuestDate = {
   Today: 'today',
   Tomorrow: 'tomorrow',

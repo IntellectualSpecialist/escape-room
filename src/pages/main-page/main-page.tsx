@@ -1,10 +1,12 @@
 import { Helmet } from 'react-helmet-async';
 import CardsList from '../../components/cards-list/cards-list';
-import { quests } from '../../mocks/quests';
-import { ReactEventHandler, useMemo, useState } from 'react';
+import { ReactEventHandler, useEffect, useMemo, useState } from 'react';
 import { GenreFilter, LevelFilter } from '../../types';
 import { filterByGenre, filterByLevel } from '../../utils';
 import Filters from '../../components/filters/filters';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { selectQuests } from '../../components/store/quests/selectors';
+import { fetchQuestsAction } from '../../components/store/api-actions';
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
 
@@ -13,6 +15,13 @@ const MainPage = (): JSX.Element => {
     type: GenreFilter.All,
     level: LevelFilter.Any
   });
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchQuestsAction());
+  }, [dispatch]);
+
+  const quests = useAppSelector(selectQuests);
 
   const handleFiltersChange: ChangeHandler = (evt) => {
     const {name, id} = evt.currentTarget;
