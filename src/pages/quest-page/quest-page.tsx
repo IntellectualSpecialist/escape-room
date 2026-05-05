@@ -1,9 +1,30 @@
 import { Helmet } from 'react-helmet-async';
-import { quest } from '../../mocks/quest';
-import { AppRoute, QuestLevelLabel, QuestTypeLabel } from '../../const';
-import { Link } from 'react-router-dom';
+import { AppRoute, QuestLevelLabel, QuestTypeLabel, RequestStatus } from '../../const';
+import { Link, Navigate, useParams } from 'react-router-dom';
+import { fetchQuestAction } from '../../store/api-actions';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useEffect } from 'react';
+import { selectQuest, selectQuestStatus } from '../../store/quest/selectors';
+import Loading from '../../components/loading/loading';
 
 const QuestPage = () => {
+  const {id: pageId} = useParams();
+  const dispatch = useAppDispatch();
+  const quest = useAppSelector(selectQuest);
+  const questStatus = useAppSelector(selectQuestStatus);
+
+  useEffect(() => {
+    dispatch(fetchQuestAction(pageId as string));
+  }, [dispatch, pageId]);
+
+  if (questStatus === RequestStatus.Failed) {
+    return <Navigate to={AppRoute.NotFound} />;
+  }
+
+  if (questStatus === RequestStatus.Loading || !quest) {
+    return <Loading/>;
+  }
+
   const {id, title, level, description, type, coverImg, coverImgWebp, peopleMinMax} = quest;
 
   return (

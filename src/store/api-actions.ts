@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AppDispatch, LoginFormData, Quest, State, UserData } from '../types';
+import { AppDispatch, LoginFormData, PageQuest, Quest, State, UserData } from '../types';
 import { AxiosInstance } from 'axios';
 import { APIRoute } from '../const';
 import { removeToken, saveToken } from '../services';
@@ -12,6 +12,19 @@ export const fetchQuestsAction = createAsyncThunk<Quest[], undefined, {
   'data/fetchQuests',
   async (_args, {extra: api}) => {
     const {data} = await api.get<Quest[]>(APIRoute.Quest);
+
+    return data;
+  }
+);
+
+export const fetchQuestAction = createAsyncThunk<PageQuest, string, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'data/fetchQuest',
+  async (id, {extra: api}) => {
+    const {data} = await api.get<PageQuest>(`${APIRoute.Quest}/${id}`);
 
     return data;
   }
