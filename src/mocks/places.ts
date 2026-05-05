@@ -1,6 +1,6 @@
-import { BookingQuest } from '../types';
+import { Place } from '../types';
 
-export const places: BookingQuest[] = [
+export const places: Place[] = [
   {
     'id': '5f54c76f-f26f-4762-bf38-16177f84690a',
     'location': {

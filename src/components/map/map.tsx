@@ -1,11 +1,11 @@
 import { Icon, LatLngExpression } from 'leaflet';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { BookingQuest, BookingQuestShort, Coords } from '../../types';
+import { Place, PlaceShort, Coords } from '../../types';
 
 type MapProps = {
-  markers: BookingQuestShort[];
-  activeMarker?: BookingQuest;
+  markers: PlaceShort[];
+  activeMarker?: Place;
   onMarkerClick?: (id: string) => void;
   mainPosition?: Coords;
   zoom?: number;

@@ -1,14 +1,51 @@
 import { Helmet } from 'react-helmet-async';
-import { places } from '../../mocks/places';
-import { quest } from '../../mocks/quest';
 import BookingForm from '../../components/booking-form/booking-form';
 import Map from '../../components/map/map';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchPlacesAction } from '../../store/api-actions';
+import { selectPlaces, selectPlacesRequestStatus } from '../../store/booking/selectors';
+import { Navigate, useParams } from 'react-router-dom';
+import Loading from '../../components/loading/loading';
+import { AppRoute, RequestStatus } from '../../const';
+import { selectQuests } from '../../store/quests/selectors';
+import { findQuestById } from '../../utils';
 
 const BookingPage = (): JSX.Element => {
-  const [currentBookingId, setCurrentBookingId] = useState<string>(places[0].id);
+  const {id: offerId} = useParams();
+  const dispatch = useAppDispatch();
+  const places = useAppSelector(selectPlaces);
+  const quests = useAppSelector(selectQuests);
+  const quest = useMemo(() => findQuestById(quests, offerId as string), [quests, offerId]);
+  const placesStatus = useAppSelector(selectPlacesRequestStatus);
+  const [currentBookingId, setCurrentBookingId] = useState<string>(places[0]?.id || '');
+
+  useEffect(() => {
+    dispatch(fetchPlacesAction(offerId as string));
+  }, [dispatch, offerId]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isMounted) {
+      setCurrentBookingId(places[0]?.id || '');
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [places]);
+
+  if (placesStatus === RequestStatus.Failed) {
+    return <Navigate to={AppRoute.NotFound} />;
+  }
+
+  if (placesStatus === RequestStatus.Loading) {
+    return <Loading/>;
+  }
+
   const currentBooking = places.find((place) => place.id === currentBookingId);
-  const {title} = quest;
+  const {title} = quest || {};
   const {slots, location} = currentBooking || {};
   const {address} = location || {};
 
@@ -42,18 +79,27 @@ const BookingPage = (): JSX.Element => {
             Бронирование квеста
           </h1>
           <p className="title title--size-m title--uppercase page-content__title">
-            {title}
+            {title || 'Без названия'}
           </p>
         </div>
         <div className="page-content__item">
           <div className="booking-map">
-            <Map markers={places} activeMarker={currentBooking} onMarkerClick={handleCurrentBookingChange} />
+            <Map
+              markers={places}
+              activeMarker={currentBooking}
+              onMarkerClick={handleCurrentBookingChange}
+            />
             <p className="booking-map__address">
               Вы&nbsp;выбрали: {address}
             </p>
           </div>
         </div>
-        {slots && <BookingForm placeId={currentBookingId} places={slots} />}
+        {slots &&
+          <BookingForm
+            placeId={currentBookingId}
+            places={slots}
+            offerId={offerId as string}
+          />}
 
       </div>
     </>

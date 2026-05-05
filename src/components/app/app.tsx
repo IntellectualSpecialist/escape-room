@@ -13,7 +13,7 @@ import PrivateRoute from '../private-route/private-route';
 import PageWrapper from '../layout/page-wrapper/page-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
-import { checkAuthAction } from '../../store/api-actions';
+import { checkAuthAction, fetchQuestsAction } from '../../store/api-actions';
 import { selectAuthorizationStatus, selectUserRequestStatus } from '../../store/user/selectors';
 import Loading from '../loading/loading';
 
@@ -21,6 +21,10 @@ const App = (): JSX.Element => {
   const userRequestStatus = useAppSelector(selectUserRequestStatus);
   const authorizationStatus = useAppSelector(selectAuthorizationStatus);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchQuestsAction());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(checkAuthAction());

@@ -2,7 +2,7 @@ export * from './quest';
 export * from './reservation-quest';
 export * from './page-quest';
 export * from './location';
-export * from './booking-quest';
+export * from './place';
 export * from './booking-form-data';
 export * from './login-form-data';
 export * from './filters';

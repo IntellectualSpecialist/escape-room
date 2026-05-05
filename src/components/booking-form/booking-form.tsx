@@ -1,26 +1,35 @@
-import { ReactEventHandler, useState } from 'react';
+import { FormEvent, ReactEventHandler, useState } from 'react';
 import { BookingFormData, Slots } from '../../types';
 import { convertTime, getBookingDataProperties } from '../../utils';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
+import { postBokingAction } from '../../store/api-actions';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks';
+import { AppRoute } from '../../const';
+import { toast } from 'react-toastify';
 
 type BookingFormProps = {
   places: Slots;
   placeId: string;
+  offerId: string;
 }
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
 
-const BookingForm = ({places, placeId}: BookingFormProps): JSX.Element => {
+const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element => {
   const [formData, setFormData] = useState<BookingFormData>({
     date: 'today',
     time: '',
     contactPerson: '',
     withChildren: true,
     peopleCount: 0,
-    placeId: placeId,
+    placeId,
     phone: '',
   });
   const [personalDataAgreement, setPersonalDataAgreement] = useState(false);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const {today: todayItems, tomorrow: tomorrowItems} = places || {};
 
   const handleFormDataChange: ChangeHandler = (evt) => {
@@ -37,11 +46,28 @@ const BookingForm = ({places, placeId}: BookingFormProps): JSX.Element => {
     setPersonalDataAgreement(evt.currentTarget.checked);
   };
 
+  const handleFormSubmit = async (evt: FormEvent<HTMLFormElement>): Promise<void> => {
+    evt.preventDefault();
+    try {
+      setIsFormDisabled(true);
+      await dispatch(postBokingAction({formData, offerId})).unwrap();
+      navigate(AppRoute.MyQuests);
+
+    } catch(err) {
+      toast.error('Ошибка отправки');
+    } finally {
+      setIsFormDisabled(false);
+    }
+  };
+
   return (
     <form
       className="booking-form"
       action="https://echo.htmlacademy.ru/"
       method="post"
+      onSubmit={(evt) => {
+        handleFormSubmit(evt);
+      }}
     >
       <fieldset className="booking-form__section">
         <legend className="visually-hidden">Выбор даты и времени</legend>
@@ -155,6 +181,7 @@ const BookingForm = ({places, placeId}: BookingFormProps): JSX.Element => {
       <button
         className="btn btn--accent btn--cta booking-form__submit"
         type="submit"
+        disabled={isFormDisabled}
       >
           Забронировать
       </button>

@@ -1,12 +1,11 @@
 import { Helmet } from 'react-helmet-async';
 import CardsList from '../../components/cards-list/cards-list';
-import { ReactEventHandler, useEffect, useMemo, useState } from 'react';
+import { ReactEventHandler, useMemo, useState } from 'react';
 import { GenreFilter, LevelFilter } from '../../types';
 import { filterByGenre, filterByLevel } from '../../utils';
 import Filters from '../../components/filters/filters';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppSelector } from '../../hooks';
 import { selectQuests, selectQuestsStatus } from '../../store/quests/selectors';
-import { fetchQuestsAction } from '../../store/api-actions';
 import { RequestStatus } from '../../const';
 import Loading from '../../components/loading/loading';
 
@@ -17,11 +16,6 @@ const MainPage = (): JSX.Element => {
     type: GenreFilter.All,
     level: LevelFilter.Any
   });
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(fetchQuestsAction());
-  }, [dispatch]);
 
   const quests = useAppSelector(selectQuests);
   const status = useAppSelector(selectQuestsStatus);

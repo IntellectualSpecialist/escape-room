@@ -10,10 +10,10 @@ export type Slots = {
     tomorrow: Slot[];
   }
 
-export type BookingQuest = {
+export type Place = {
   id: string;
   location: Location;
   slots: Slots;
 }
 
-export type BookingQuestShort = Omit<BookingQuest, 'slots'>;
+export type PlaceShort = Omit<Place, 'slots'>;

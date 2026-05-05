@@ -1,8 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import Map from '../../components/map/map';
-import { BookingQuestShort } from '../../types';
+import { PlaceShort } from '../../types';
 
-const MAIN_PLACE: BookingQuestShort = {
+const MAIN_PLACE: PlaceShort = {
   id: '1',
   location: {
     address: 'Набережная реки Карповка, д 5П',
@@ -76,7 +76,12 @@ const ContactsPage = (): JSX.Element => (
         <div className="contacts__map">
           <div className="map">
             <div className="map__container">
-              <Map markers={[MAIN_PLACE]} mainPosition={MAIN_PLACE.location.coords} zoom={16} height={370} />
+              <Map
+                markers={[MAIN_PLACE]}
+                mainPosition={MAIN_PLACE.location.coords}
+                zoom={16}
+                height={370}
+              />
             </div>
           </div>
         </div>
