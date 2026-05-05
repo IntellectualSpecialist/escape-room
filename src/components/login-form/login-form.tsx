@@ -1,8 +1,11 @@
-import { ReactEventHandler, useState } from 'react';
+import { FormEventHandler, ReactEventHandler, useState } from 'react';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 import { LoginFormData } from '../../types';
+import { loginAction } from '../../store/api-actions';
+import { useAppDispatch } from '../../hooks';
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
+type SubmitHandler = FormEventHandler<HTMLFormElement>
 
 const LoginForm = (): JSX.Element => {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -10,6 +13,7 @@ const LoginForm = (): JSX.Element => {
     password: ''
   });
   const [personalDataAgreement, setPersonalDataAgreement] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleFormDataChange: ChangeHandler = (evt) => {
     const {name, value} = evt.currentTarget;
@@ -25,11 +29,17 @@ const LoginForm = (): JSX.Element => {
     setPersonalDataAgreement(evt.currentTarget.checked);
   };
 
+  const handleFormSubmit: SubmitHandler = (evt) => {
+    evt.preventDefault();
+    dispatch(loginAction(formData));
+  };
+
   return (
     <form
       className="login-form"
       action="https://echo.htmlacademy.ru/"
       method="post"
+      onSubmit={handleFormSubmit}
     >
       <div className="login-form__inner-wrapper">
         <h1 className="title title--size-s login-form__title">Вход</h1>

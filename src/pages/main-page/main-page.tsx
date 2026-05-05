@@ -5,8 +5,10 @@ import { GenreFilter, LevelFilter } from '../../types';
 import { filterByGenre, filterByLevel } from '../../utils';
 import Filters from '../../components/filters/filters';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectQuests } from '../../store/quests/selectors';
+import { selectQuests, selectQuestsStatus } from '../../store/quests/selectors';
 import { fetchQuestsAction } from '../../store/api-actions';
+import { RequestStatus } from '../../const';
+import Loading from '../../components/loading/loading';
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
 
@@ -22,6 +24,7 @@ const MainPage = (): JSX.Element => {
   }, [dispatch]);
 
   const quests = useAppSelector(selectQuests);
+  const status = useAppSelector(selectQuestsStatus);
 
   const handleFiltersChange: ChangeHandler = (evt) => {
     const {name, id} = evt.currentTarget;
@@ -37,6 +40,10 @@ const MainPage = (): JSX.Element => {
   const filteredByGenreQuests = useMemo(() => filterByGenre(quests, filters.type), [quests, filters.type]);
 
   const filteredByGenreAndLevelQuests = useMemo(() => filterByLevel(filteredByGenreQuests, filters.level), [filteredByGenreQuests, filters.level]);
+
+  if (status === RequestStatus.Loading) {
+    return <Loading />;
+  }
 
   return (
     <>

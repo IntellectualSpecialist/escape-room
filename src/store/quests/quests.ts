@@ -5,7 +5,7 @@ import { QuestsData } from '../../types';
 
 const initialState: QuestsData = {
   quests: [],
-  status: RequestStatus.Idle
+  requestStatus: RequestStatus.Idle
 };
 
 export const quests = createSlice({
@@ -15,14 +15,14 @@ export const quests = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchQuestsAction.pending, (state) => {
-        state.status = RequestStatus.Loading;
+        state.requestStatus = RequestStatus.Loading;
       })
       .addCase(fetchQuestsAction.fulfilled, (state, action) => {
         state.quests = action.payload;
-        state.status = RequestStatus.Success;
+        state.requestStatus = RequestStatus.Success;
       })
       .addCase(fetchQuestsAction.rejected, (state) => {
-        state.status = RequestStatus.Failed;
+        state.requestStatus = RequestStatus.Failed;
       });
   }
 });

@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { AppRoute } from '../../../const';
 
 type NavProps = {
@@ -21,6 +21,7 @@ const NavLinks = [
 ];
 
 const Nav = ({isUserAuth}: NavProps): JSX.Element => {
+  const {pathname} = useLocation();
   const clearNavLinks = isUserAuth ? NavLinks : NavLinks.filter(({to}) => to !== AppRoute.MyQuests);
 
   return (
@@ -28,8 +29,13 @@ const Nav = ({isUserAuth}: NavProps): JSX.Element => {
       <ul className="main-nav__list">
         {!!NavLinks?.length &&
           clearNavLinks.map(({to, text}) => {
-            const defaultClass = to === AppRoute.Root ? 'link not-disabled' : 'link';
+            let defaultClass = to === AppRoute.Root ? 'link not-disabled' : 'link';
             const activeClass = 'active';
+            const questRoute = AppRoute.Quest.replace('/:id', '');
+
+            if (to === AppRoute.Root && pathname.indexOf(questRoute) !== -1) {
+              defaultClass = `${defaultClass } ${ activeClass}`;
+            }
 
             return (
               <li key={text} className="main-nav__item">

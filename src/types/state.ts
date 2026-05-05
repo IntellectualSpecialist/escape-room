@@ -1,10 +1,15 @@
 import { store } from '../store';
-import { RequestStatus } from '../const';
+import { AuthorizationStatus, RequestStatus } from '../const';
 import { Quest } from './quest';
 
 export type QuestsData = {
   quests: Quest[];
-  status: RequestStatus;
+  requestStatus: RequestStatus;
+};
+
+export type UserProcessData = {
+  authorizationStatus: AuthorizationStatus;
+  requestStatus: RequestStatus;
 };
 
 export type State = ReturnType<typeof store.getState>

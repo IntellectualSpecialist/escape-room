@@ -2,10 +2,14 @@ import { matchPath, Outlet, useLocation } from 'react-router-dom';
 import Header from '../header/header';
 import Footer from '../footer/footer';
 import { AppRoute } from '../../../const';
-import { authorizationStatus, isAuth } from '../../../utils';
+import { isAuth } from '../../../utils';
+import { useAppSelector } from '../../../hooks';
+import { selectAuthorizationStatus } from '../../../store/user/selectors';
 
 const PageWrapper = (): JSX.Element => {
   const {pathname} = useLocation();
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+
   const isQuestPage = Boolean(matchPath(AppRoute.Quest, pathname));
   const isBookingPage = Boolean(matchPath(AppRoute.Booking, pathname));
   let mainClassName = 'page-content';

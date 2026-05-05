@@ -1,7 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AppDispatch, Quest, State } from '../types';
+import { AppDispatch, LoginFormData, Quest, State, UserData } from '../types';
 import { AxiosInstance } from 'axios';
 import { APIRoute } from '../const';
+import { removeToken, saveToken } from '../services';
 
 export const fetchQuestsAction = createAsyncThunk<Quest[], undefined, {
   dispatch: AppDispatch;
@@ -13,5 +14,44 @@ export const fetchQuestsAction = createAsyncThunk<Quest[], undefined, {
     const {data} = await api.get<Quest[]>(APIRoute.Quest);
 
     return data;
+  }
+);
+
+export const checkAuthAction = createAsyncThunk<UserData, undefined, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'user/checkAuth',
+  async (_args, { extra: api}) => {
+    const {data} = await api.get<UserData>(APIRoute.Login);
+
+    return data;
+  }
+);
+
+export const loginAction = createAsyncThunk<UserData, LoginFormData, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'user/login',
+  async (loginForm, { extra: api}) => {
+    const {data} = await api.post<UserData>(APIRoute.Login, loginForm);
+    saveToken(data.token);
+
+    return data;
+  }
+);
+
+export const logoutAction = createAsyncThunk<void, undefined, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'user/logout',
+  async (_args, { extra: api}) => {
+    await api.delete(APIRoute.Logout);
+    removeToken();
   }
 );

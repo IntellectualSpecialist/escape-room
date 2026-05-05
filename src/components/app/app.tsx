@@ -7,48 +7,67 @@ import MainPage from '../../pages/main-page/main-page';
 import MyQuestsPage from '../../pages/my-quests-page/my-quests-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import QuestPage from '../../pages/quest-page/quest-page';
-import { AppRoute } from '../../const';
-import { authorizationStatus, isAuth } from '../../utils';
+import { AppRoute, AuthorizationStatus, RequestStatus } from '../../const';
+import { isAuth } from '../../utils';
 import PrivateRoute from '../private-route/private-route';
 import PageWrapper from '../layout/page-wrapper/page-wrapper';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useEffect } from 'react';
+import { checkAuthAction } from '../../store/api-actions';
+import { selectAuthorizationStatus, selectUserRequestStatus } from '../../store/user/selectors';
+import Loading from '../loading/loading';
 
-const App = (): JSX.Element => (
-  <HelmetProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route path={AppRoute.Root} element={<PageWrapper />}>
-          <Route index element={<MainPage />} />
+const App = (): JSX.Element => {
+  const userRequestStatus = useAppSelector(selectUserRequestStatus);
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const dispatch = useAppDispatch();
 
-          <Route path={AppRoute.Login} element={
-            <PrivateRoute isAvailable={!isAuth(authorizationStatus)} route={AppRoute.Root}>
-              <LoginPage />
-            </PrivateRoute>
-          }
-          />
+  useEffect(() => {
+    dispatch(checkAuthAction());
+  }, [dispatch]);
 
-          <Route path={AppRoute.Contacts} element={<ContactsPage />} />
+  if (userRequestStatus === RequestStatus.Loading || authorizationStatus === AuthorizationStatus.Unknown) {
+    return <Loading />;
+  }
 
-          <Route path={AppRoute.Booking} element={
-            <PrivateRoute isAvailable={isAuth(authorizationStatus)} route={AppRoute.Login}>
-              <BookingPage />
-            </PrivateRoute>
-          }
-          />
+  return (
+    <HelmetProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path={AppRoute.Root} element={<PageWrapper />}>
+            <Route index element={<MainPage />} />
 
-          <Route path={AppRoute.Quest} element={<QuestPage />} />
+            <Route path={AppRoute.Login} element={
+              <PrivateRoute isAvailable={!isAuth(authorizationStatus)} route={AppRoute.Root}>
+                <LoginPage />
+              </PrivateRoute>
+            }
+            />
 
-          <Route path={AppRoute.MyQuests} element={
-            <PrivateRoute isAvailable={isAuth(authorizationStatus)} route={AppRoute.Login}>
-              <MyQuestsPage />
-            </PrivateRoute>
-          }
-          />
+            <Route path={AppRoute.Contacts} element={<ContactsPage />} />
 
-          <Route path='*' element={<NotFoundPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  </HelmetProvider>
-);
+            <Route path={AppRoute.Booking} element={
+              <PrivateRoute isAvailable={isAuth(authorizationStatus)} route={AppRoute.Login}>
+                <BookingPage />
+              </PrivateRoute>
+            }
+            />
+
+            <Route path={AppRoute.Quest} element={<QuestPage />} />
+
+            <Route path={AppRoute.MyQuests} element={
+              <PrivateRoute isAvailable={isAuth(authorizationStatus)} route={AppRoute.Login}>
+                <MyQuestsPage />
+              </PrivateRoute>
+            }
+            />
+
+            <Route path='*' element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
+  );
+};
 
 export default App;

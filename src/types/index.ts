@@ -7,3 +7,4 @@ export * from './booking-form-data';
 export * from './login-form-data';
 export * from './filters';
 export * from './state';
+export * from './user-data';
