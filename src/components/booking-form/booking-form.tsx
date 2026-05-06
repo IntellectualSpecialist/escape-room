@@ -64,6 +64,10 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
     }
   };
 
+  const handleInputNumberWhell = (event: React.WheelEvent<HTMLInputElement>) => {
+    event.currentTarget.blur();
+  };
+
   return (
     <form
       className="booking-form"
@@ -165,6 +169,7 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
             required
             onChange={handleFormDataChange}
             disabled={isSubmitting}
+            onWheel={handleInputNumberWhell}
           />
         </div>
         <label className="custom-checkbox booking-form__checkbox booking-form__checkbox--children">
