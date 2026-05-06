@@ -3,6 +3,7 @@ import { AuthorizationStatus, RequestStatus } from '../const';
 import { Quest } from './quest';
 import { PageQuest } from './page-quest';
 import { Place } from './place';
+import { ReservationQuest } from './reservation-quest';
 
 export type QuestsData = {
   quests: Quest[];
@@ -18,6 +19,12 @@ export type BookingData = {
   places: Place[];
   requestStatus: RequestStatus;
   requestFormStatus: RequestStatus;
+};
+
+export type ReservationData = {
+  reservation: ReservationQuest[];
+  requestStatus: RequestStatus;
+  deleteRequestStatus: RequestStatus;
 };
 
 export type UserProcessData = {

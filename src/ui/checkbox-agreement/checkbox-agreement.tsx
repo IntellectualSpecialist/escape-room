@@ -5,11 +5,12 @@ type CheckboxAgreementProps = {
   className: string;
   onAgreementChange: (evt: React.SyntheticEvent<HTMLInputElement, Event>) => void;
   isChecked: boolean;
+  isDisabled?: boolean;
 }
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
 
-const CheckboxAgreement = ({className, onAgreementChange, isChecked}: CheckboxAgreementProps): JSX.Element => {
+const CheckboxAgreement = ({className, onAgreementChange, isChecked, isDisabled = false}: CheckboxAgreementProps): JSX.Element => {
   const handleAgreementChange: ChangeHandler = (evt) => {
     onAgreementChange(evt);
   };
@@ -23,6 +24,7 @@ const CheckboxAgreement = ({className, onAgreementChange, isChecked}: CheckboxAg
         required
         checked={isChecked}
         onChange={handleAgreementChange}
+        disabled={isDisabled}
       />
       <span className="custom-checkbox__icon">
         <svg width={20} height={17} aria-hidden="true">

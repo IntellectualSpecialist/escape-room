@@ -4,9 +4,10 @@ import { convertTime, getBookingDataProperties } from '../../utils';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 import { postBokingAction } from '../../store/api-actions';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../hooks';
-import { AppRoute } from '../../const';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { AppRoute, RequestStatus } from '../../const';
 import { toast } from 'react-toastify';
+import { selectPlacesRequestFormStatus } from '../../store/booking/selectors';
 
 type BookingFormProps = {
   places: Slots;
@@ -15,6 +16,11 @@ type BookingFormProps = {
 }
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
+
+enum SubmitButtonText {
+  Idle = 'Забронировать',
+  Sending = 'Отправляю...'
+}
 
 const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element => {
   const [formData, setFormData] = useState<BookingFormData>({
@@ -27,19 +33,21 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
     phone: '',
   });
   const [personalDataAgreement, setPersonalDataAgreement] = useState(false);
-  const [isFormDisabled, setIsFormDisabled] = useState(false);
   const dispatch = useAppDispatch();
+  const formSubmitStatus = useAppSelector(selectPlacesRequestFormStatus);
+  const isSubmitting = formSubmitStatus === RequestStatus.Loading;
+
   const navigate = useNavigate();
   const {today: todayItems, tomorrow: tomorrowItems} = places || {};
 
   const handleFormDataChange: ChangeHandler = (evt) => {
     const {name, value, checked} = evt.currentTarget;
 
-    setFormData({
-      ...formData,
+    setFormData((prevForm) => ({
+      ...prevForm,
 
       ...getBookingDataProperties(name, value, checked)
-    });
+    }));
   };
 
   const handleAgreementChange: ChangeHandler = (evt) => {
@@ -49,14 +57,10 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
   const handleFormSubmit = async (evt: FormEvent<HTMLFormElement>): Promise<void> => {
     evt.preventDefault();
     try {
-      setIsFormDisabled(true);
       await dispatch(postBokingAction({formData, offerId})).unwrap();
       navigate(AppRoute.MyQuests);
-
     } catch(err) {
       toast.error('Ошибка отправки');
-    } finally {
-      setIsFormDisabled(false);
     }
   };
 
@@ -85,7 +89,7 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
                     name="date"
                     required
                     defaultValue={timeValue}
-                    disabled={!isAvailable}
+                    disabled={!isAvailable || isSubmitting}
                     onChange={handleFormDataChange}
                     checked={convertTime(formData.date, formData.time) === timeValue}
                   />
@@ -107,7 +111,7 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
                     name="date"
                     required
                     defaultValue={timeValue}
-                    disabled={!isAvailable}
+                    disabled={!isAvailable || isSubmitting}
                     checked={convertTime(formData.date, formData.time) === timeValue}
                     onChange={handleFormDataChange}
                   />
@@ -131,6 +135,7 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
             required
             pattern="[А-Яа-яЁёA-Za-z'- ]{1,}"
             onChange={handleFormDataChange}
+            disabled={isSubmitting}
           />
         </div>
         <div className="custom-input booking-form__input">
@@ -145,6 +150,7 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
             required
             pattern="[0-9]{10,}"
             onChange={handleFormDataChange}
+            disabled={isSubmitting}
           />
         </div>
         <div className="custom-input booking-form__input">
@@ -158,6 +164,7 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
             placeholder="Количество участников"
             required
             onChange={handleFormDataChange}
+            disabled={isSubmitting}
           />
         </div>
         <label className="custom-checkbox booking-form__checkbox booking-form__checkbox--children">
@@ -167,6 +174,7 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
             name="children"
             defaultChecked
             onChange={handleFormDataChange}
+            disabled={isSubmitting}
           />
           <span className="custom-checkbox__icon">
             <svg width={20} height={17} aria-hidden="true">
@@ -181,15 +189,16 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
       <button
         className="btn btn--accent btn--cta booking-form__submit"
         type="submit"
-        disabled={isFormDisabled}
+        disabled={isSubmitting}
       >
-          Забронировать
+        {isSubmitting ? SubmitButtonText.Sending : SubmitButtonText.Idle}
       </button>
 
       <CheckboxAgreement
         className='booking-form__checkbox booking-form__checkbox--agreement'
         onAgreementChange={handleAgreementChange}
         isChecked={personalDataAgreement}
+        isDisabled={isSubmitting}
       />
     </form>
   );

@@ -7,18 +7,17 @@ import MainPage from '../../pages/main-page/main-page';
 import MyQuestsPage from '../../pages/my-quests-page/my-quests-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import QuestPage from '../../pages/quest-page/quest-page';
-import { AppRoute, AuthorizationStatus, RequestStatus } from '../../const';
+import { AppRoute, AuthorizationStatus } from '../../const';
 import { isAuth } from '../../utils';
 import PrivateRoute from '../private-route/private-route';
 import PageWrapper from '../layout/page-wrapper/page-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { checkAuthAction, fetchQuestsAction } from '../../store/api-actions';
-import { selectAuthorizationStatus, selectUserRequestStatus } from '../../store/user/selectors';
+import { selectAuthorizationStatus } from '../../store/user/selectors';
 import Loading from '../loading/loading';
 
 const App = (): JSX.Element => {
-  const userRequestStatus = useAppSelector(selectUserRequestStatus);
   const authorizationStatus = useAppSelector(selectAuthorizationStatus);
   const dispatch = useAppDispatch();
 
@@ -30,7 +29,7 @@ const App = (): JSX.Element => {
     dispatch(checkAuthAction());
   }, [dispatch]);
 
-  if (userRequestStatus === RequestStatus.Loading || authorizationStatus === AuthorizationStatus.Unknown) {
+  if (authorizationStatus === AuthorizationStatus.Unknown) {
     return <Loading />;
   }
 

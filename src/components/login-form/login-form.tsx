@@ -1,11 +1,18 @@
-import { FormEventHandler, ReactEventHandler, useState } from 'react';
+import { FormEvent, ReactEventHandler, useState } from 'react';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 import { LoginFormData } from '../../types';
 import { loginAction } from '../../store/api-actions';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { toast } from 'react-toastify';
+import { selectUserRequestStatus } from '../../store/user/selectors';
+import { RequestStatus } from '../../const';
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
-type SubmitHandler = FormEventHandler<HTMLFormElement>
+
+enum SubmitButtonText {
+  Idle = 'Войти',
+  Sending = 'Отправляю...'
+}
 
 const LoginForm = (): JSX.Element => {
   const [formData, setFormData] = useState<LoginFormData>({
@@ -14,6 +21,8 @@ const LoginForm = (): JSX.Element => {
   });
   const [personalDataAgreement, setPersonalDataAgreement] = useState(false);
   const dispatch = useAppDispatch();
+  const formSubmitStatus = useAppSelector(selectUserRequestStatus);
+  const isSubmitting = formSubmitStatus === RequestStatus.Loading;
 
   const handleFormDataChange: ChangeHandler = (evt) => {
     const {name, value} = evt.currentTarget;
@@ -29,9 +38,15 @@ const LoginForm = (): JSX.Element => {
     setPersonalDataAgreement(evt.currentTarget.checked);
   };
 
-  const handleFormSubmit: SubmitHandler = (evt) => {
+
+  const handleFormSubmit = async (evt: FormEvent<HTMLFormElement>): Promise<void> => {
     evt.preventDefault();
-    dispatch(loginAction(formData));
+
+    try {
+      await dispatch(loginAction(formData)).unwrap();
+    } catch(err) {
+      toast.error('Ошибка отправки');
+    }
   };
 
   return (
@@ -39,7 +54,9 @@ const LoginForm = (): JSX.Element => {
       className="login-form"
       action="https://echo.htmlacademy.ru/"
       method="post"
-      onSubmit={handleFormSubmit}
+      onSubmit={(evt) => {
+        handleFormSubmit(evt);
+      }}
     >
       <div className="login-form__inner-wrapper">
         <h1 className="title title--size-s login-form__title">Вход</h1>
@@ -56,6 +73,7 @@ const LoginForm = (): JSX.Element => {
               required
               value={formData.email}
               onChange={handleFormDataChange}
+              disabled={isSubmitting}
             />
           </div>
           <div className="custom-input login-form__input">
@@ -70,20 +88,23 @@ const LoginForm = (): JSX.Element => {
               required
               value={formData.password}
               onChange={handleFormDataChange}
+              disabled={isSubmitting}
             />
           </div>
         </div>
         <button
           className="btn btn--accent btn--general login-form__submit"
           type="submit"
+          disabled={isSubmitting}
         >
-              Войти
+          {isSubmitting ? SubmitButtonText.Sending : SubmitButtonText.Idle}
         </button>
       </div>
       <CheckboxAgreement
         className="login-form__checkbox"
         onAgreementChange={handleAgreementChange}
         isChecked={personalDataAgreement}
+        isDisabled={isSubmitting}
       />
     </form>
   );
