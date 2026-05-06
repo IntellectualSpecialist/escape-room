@@ -1,11 +1,11 @@
+import './style.css';
 import { ReactEventHandler, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import './style.css';
+import { useNavigate } from 'react-router-dom';
 import { BookingFormData, PeopleMinMax, Slots } from '../../types';
 import { convertTime, getBookingDataProperties } from '../../utils';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 import { postBokingAction } from '../../store/api-actions';
-import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { AppRoute, RequestStatus } from '../../const';
 import { toast } from 'react-toastify';

@@ -1,6 +1,6 @@
+import './style.css';
 import { ReactEventHandler, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import './style.css';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 import { LoginFormData } from '../../types';
 import { loginAction } from '../../store/api-actions';
@@ -18,7 +18,7 @@ enum SubmitButtonText {
 
 const RegExp = {
   Email: /^[A-Za-z0-9._%+-]+@[A-Za-z-]+\.[A-Za-z]{2,}$/,
-  Password: /^(?=.*[A-Za-zА-Яа-яЁё])(?=.*\d)[A-Za-zА-Яа-яЁё\d]{3,15}$/
+  Password: /^(?=.*[A-Za-zА-Яа-яЁё])(?=.*\d).{3,15}$/
 } as const;
 
 const LoginForm = (): JSX.Element => {
