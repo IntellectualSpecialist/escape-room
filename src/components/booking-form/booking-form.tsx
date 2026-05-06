@@ -47,6 +47,8 @@ const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps)
   const isSubmitting = formSubmitStatus === RequestStatus.Loading;
   const [min, max] = peopleMinMax;
 
+  const isButtonDisabled = !formData.time || !formData.contactPerson || !formData.phone || !formData.peopleCount || !personalDataAgreement;
+
   const navigate = useNavigate();
   const {today: todayItems, tomorrow: tomorrowItems} = places || {};
 
@@ -207,7 +209,7 @@ const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps)
       <button
         className="btn btn--accent btn--cta booking-form__submit"
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isButtonDisabled}
       >
         {isSubmitting ? SubmitButtonText.Sending : SubmitButtonText.Idle}
       </button>

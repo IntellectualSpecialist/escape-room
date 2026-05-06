@@ -17,7 +17,6 @@ const BookingPage = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const places = useAppSelector(selectPlaces);
   const quests = useAppSelector(selectQuests);
-  const quest = useMemo(() => findQuestById(quests, offerId as string), [quests, offerId]);
   const placesStatus = useAppSelector(selectPlacesRequestStatus);
   const [currentBookingId, setCurrentBookingId] = useState<string>(places[0]?.id || '');
 
@@ -36,6 +35,8 @@ const BookingPage = (): JSX.Element => {
       isMounted = false;
     };
   }, [places]);
+
+  const quest = useMemo(() => findQuestById(quests, offerId as string), [quests, offerId]);
 
   if (placesStatus === RequestStatus.Failed) {
     return <Navigate to={AppRoute.NotFound} />;

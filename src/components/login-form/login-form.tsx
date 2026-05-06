@@ -32,6 +32,8 @@ const LoginForm = (): JSX.Element => {
   const formSubmitStatus = useAppSelector(selectUserRequestStatus);
   const isSubmitting = formSubmitStatus === RequestStatus.Loading;
 
+  const isButtonDisabled = !personalDataAgreement || !formData.email || !formData.password;
+
   const handleFormDataChange: ChangeHandler = (evt) => {
     const {name, value} = evt.currentTarget;
 
@@ -104,7 +106,7 @@ const LoginForm = (): JSX.Element => {
         <button
           className="btn btn--accent btn--general login-form__submit"
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isButtonDisabled}
         >
           {isSubmitting ? SubmitButtonText.Sending : SubmitButtonText.Idle}
         </button>
