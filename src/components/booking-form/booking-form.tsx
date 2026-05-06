@@ -1,5 +1,7 @@
-import { FormEvent, ReactEventHandler, useState } from 'react';
-import { BookingFormData, Slots } from '../../types';
+import { ReactEventHandler, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import './style.css';
+import { BookingFormData, PeopleMinMax, Slots } from '../../types';
 import { convertTime, getBookingDataProperties } from '../../utils';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 import { postBokingAction } from '../../store/api-actions';
@@ -13,6 +15,7 @@ type BookingFormProps = {
   places: Slots;
   placeId: string;
   offerId: string;
+  peopleMinMax: PeopleMinMax;
 }
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
@@ -22,7 +25,12 @@ enum SubmitButtonText {
   Sending = 'Отправляю...'
 }
 
-const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element => {
+const RegExp = {
+  Phone: /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/,
+  Name: /^[А-Яа-яЁёA-Za-z]{1,15}$/
+} as const;
+
+const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps): JSX.Element => {
   const [formData, setFormData] = useState<BookingFormData>({
     date: 'today',
     time: '',
@@ -33,9 +41,11 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
     phone: '',
   });
   const [personalDataAgreement, setPersonalDataAgreement] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<BookingFormData>();
   const dispatch = useAppDispatch();
   const formSubmitStatus = useAppSelector(selectPlacesRequestFormStatus);
   const isSubmitting = formSubmitStatus === RequestStatus.Loading;
+  const [min, max] = peopleMinMax;
 
   const navigate = useNavigate();
   const {today: todayItems, tomorrow: tomorrowItems} = places || {};
@@ -54,8 +64,7 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
     setPersonalDataAgreement(evt.currentTarget.checked);
   };
 
-  const handleFormSubmit = async (evt: FormEvent<HTMLFormElement>): Promise<void> => {
-    evt.preventDefault();
+  const handleFormSubmit: SubmitHandler<BookingFormData> = async (): Promise<void> => {
     try {
       await dispatch(postBokingAction({formData, offerId})).unwrap();
       navigate(AppRoute.MyQuests);
@@ -74,7 +83,7 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
       action="https://echo.htmlacademy.ru/"
       method="post"
       onSubmit={(evt) => {
-        handleFormSubmit(evt);
+        handleSubmit(handleFormSubmit)(evt);
       }}
     >
       <fieldset className="booking-form__section">
@@ -134,13 +143,14 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
           <input
             type="text"
             id="name"
-            name="name"
             placeholder="Имя"
             required
-            pattern="[А-Яа-яЁёA-Za-z'- ]{1,}"
+            {...register('contactPerson', { pattern: RegExp.Name })}
             onChange={handleFormDataChange}
             disabled={isSubmitting}
+            aria-invalid={errors.contactPerson ? 'true' : 'false'}
           />
+          {errors.contactPerson?.type === 'pattern' && <span className='booking-form__error' role="alert">От 1 до 15 символов, только буквы</span>}
         </div>
         <div className="custom-input booking-form__input">
           <label className="custom-input__label" htmlFor="tel">
@@ -149,13 +159,14 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
           <input
             type="tel"
             id="tel"
-            name="tel"
             placeholder="Телефон"
             required
-            pattern="[0-9]{10,}"
+            {...register('phone', { pattern: RegExp.Phone })}
             onChange={handleFormDataChange}
             disabled={isSubmitting}
+            aria-invalid={errors.phone ? 'true' : 'false'}
           />
+          {errors.phone?.type === 'pattern' && <span className='booking-form__error' role="alert">Номер формата +7 (000) 000-00-00 (Ру-формат)</span>}
         </div>
         <div className="custom-input booking-form__input">
           <label className="custom-input__label" htmlFor="person">
@@ -164,19 +175,21 @@ const BookingForm = ({places, placeId, offerId}: BookingFormProps): JSX.Element 
           <input
             type="number"
             id="person"
-            name="person"
             placeholder="Количество участников"
             required
+            {...register('peopleCount', { min, max })}
             onChange={handleFormDataChange}
             disabled={isSubmitting}
             onWheel={handleInputNumberWhell}
+            aria-invalid={errors.peopleCount ? 'true' : 'false'}
           />
+          {(errors.peopleCount?.type === 'min' || errors.peopleCount?.type === 'max') && <span className='booking-form__error' role="alert">{`От ${min} до ${max} человек`}</span>}
         </div>
         <label className="custom-checkbox booking-form__checkbox booking-form__checkbox--children">
           <input
             type="checkbox"
             id="children"
-            name="children"
+            name="withChildren"
             defaultChecked
             onChange={handleFormDataChange}
             disabled={isSubmitting}

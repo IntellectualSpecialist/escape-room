@@ -1,5 +1,7 @@
 import { Level, Type } from '../const';
 
+export type PeopleMinMax = number[];
+
 export type Quest = {
   id: string;
   title: string;
@@ -7,5 +9,5 @@ export type Quest = {
   previewImgWebp: string;
   level: Level;
   type: Type;
-  peopleMinMax: number[];
+  peopleMinMax: PeopleMinMax;
 }

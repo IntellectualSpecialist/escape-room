@@ -12,13 +12,9 @@ const converTimeReverse = (value: string): Pick<BookingFormData, 'date' | 'time'
 
 const getBookingDataProperties = (name: string, value: string, checked: boolean): Partial<BookingFormData> => {
   switch (name) {
-    case 'tel':
-      return {phone: value};
-    case 'name':
-      return {contactPerson: value };
-    case 'person':
+    case 'peopleCount':
       return {peopleCount: Number(value)};
-    case 'children':
+    case 'withChildren':
       return {withChildren: checked};
     case 'date':
       return {...converTimeReverse(value)};

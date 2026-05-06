@@ -1,0 +1,10 @@
+.login-form__input {
+  position: relative;
+}
+
+.login-form__error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  color: #ff0000;
+}

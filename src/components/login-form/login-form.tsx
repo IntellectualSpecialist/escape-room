@@ -1,4 +1,6 @@
-import { FormEvent, ReactEventHandler, useState } from 'react';
+import { ReactEventHandler, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import './style.css';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
 import { LoginFormData } from '../../types';
 import { loginAction } from '../../store/api-actions';
@@ -14,12 +16,18 @@ enum SubmitButtonText {
   Sending = 'Отправляю...'
 }
 
+const RegExp = {
+  Email: /^[A-Za-z0-9._%+-]+@[A-Za-z-]+\.[A-Za-z]{2,}$/,
+  Password: /^(?=.*[A-Za-zА-Яа-яЁё])(?=.*\d)[A-Za-zА-Яа-яЁё\d]{3,15}$/
+} as const;
+
 const LoginForm = (): JSX.Element => {
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: ''
   });
   const [personalDataAgreement, setPersonalDataAgreement] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
   const dispatch = useAppDispatch();
   const formSubmitStatus = useAppSelector(selectUserRequestStatus);
   const isSubmitting = formSubmitStatus === RequestStatus.Loading;
@@ -38,10 +46,7 @@ const LoginForm = (): JSX.Element => {
     setPersonalDataAgreement(evt.currentTarget.checked);
   };
 
-
-  const handleFormSubmit = async (evt: FormEvent<HTMLFormElement>): Promise<void> => {
-    evt.preventDefault();
-
+  const handleFormSubmit: SubmitHandler<LoginFormData> = async (): Promise<void> => {
     try {
       await dispatch(loginAction(formData)).unwrap();
     } catch(err) {
@@ -55,7 +60,7 @@ const LoginForm = (): JSX.Element => {
       action="https://echo.htmlacademy.ru/"
       method="post"
       onSubmit={(evt) => {
-        handleFormSubmit(evt);
+        handleSubmit(handleFormSubmit)(evt);
       }}
     >
       <div className="login-form__inner-wrapper">
@@ -68,13 +73,15 @@ const LoginForm = (): JSX.Element => {
             <input
               type="email"
               id="email"
-              name="email"
               placeholder="Адрес электронной почты"
               required
               value={formData.email}
+              {...register('email', { pattern: RegExp.Email })}
               onChange={handleFormDataChange}
               disabled={isSubmitting}
+              aria-invalid={errors.email ? 'true' : 'false'}
             />
+            {errors.email?.type === 'pattern' && <span className='login-form__error' role="alert">Укажите почту в формате example@email.com</span>}
           </div>
           <div className="custom-input login-form__input">
             <label className="custom-input__label" htmlFor="password">
@@ -83,13 +90,15 @@ const LoginForm = (): JSX.Element => {
             <input
               type="password"
               id="password"
-              name="password"
               placeholder="Пароль"
               required
               value={formData.password}
+              {...register('password', { pattern: RegExp.Password })}
               onChange={handleFormDataChange}
               disabled={isSubmitting}
+              aria-invalid={errors.password ? 'true' : 'false'}
             />
+            {errors.password?.type === 'pattern' && <span className='login-form__error' role="alert">От 3 до 15 символов. Минимум одна буква и цифра.</span>}
           </div>
         </div>
         <button

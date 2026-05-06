@@ -10,6 +10,7 @@ import Loading from '../../components/loading/loading';
 import { AppRoute, RequestStatus } from '../../const';
 import { selectQuests } from '../../store/quests/selectors';
 import { findQuestById } from '../../utils';
+import { PeopleMinMax } from '../../types';
 
 const BookingPage = (): JSX.Element => {
   const {id: offerId} = useParams();
@@ -40,14 +41,14 @@ const BookingPage = (): JSX.Element => {
     return <Navigate to={AppRoute.NotFound} />;
   }
 
-  if (placesStatus === RequestStatus.Loading) {
-    return <Loading/>;
-  }
-
   const currentBooking = places.find((place) => place.id === currentBookingId);
-  const {title} = quest || {};
+  const {title, peopleMinMax} = quest || {};
   const {slots, location} = currentBooking || {};
   const {address} = location || {};
+
+  if (placesStatus === RequestStatus.Loading || !quest) {
+    return <Loading/>;
+  }
 
   const handleCurrentBookingChange = (placeId: string): void => {
     setCurrentBookingId(placeId);
@@ -99,6 +100,7 @@ const BookingPage = (): JSX.Element => {
             placeId={currentBookingId}
             places={slots}
             offerId={offerId as string}
+            peopleMinMax={peopleMinMax as PeopleMinMax}
           />}
 
       </div>
