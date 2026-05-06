@@ -24,7 +24,6 @@ export type BookingData = {
 export type ReservationData = {
   reservation: ReservationQuest[];
   requestStatus: RequestStatus;
-  deleteRequestStatus: RequestStatus;
 };
 
 export type UserProcessData = {
