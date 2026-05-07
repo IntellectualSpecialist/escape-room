@@ -10,7 +10,7 @@ const converTimeReverse = (value: string): Pick<BookingFormData, 'date' | 'time'
   return {date, time};
 };
 
-const getBookingDataProperties = (name: string, value: string, checked: boolean): Partial<BookingFormData> => {
+const getBookingDataProperties = (name: keyof Omit<BookingFormData, 'placeId'>, value: string, checked: boolean): Partial<BookingFormData> => {
   switch (name) {
     case 'peopleCount':
       return {peopleCount: Number(value)};

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { NameSpace, RequestStatus } from '../../const';
-import { fetchPlacesAction, postBokingAction } from '../api-actions';
+import { fetchPlacesAction, postBookingAction } from '../api-actions';
 import { BookingData } from '../../types';
 
 const initialState: BookingData = {
@@ -25,13 +25,13 @@ export const booking = createSlice({
       .addCase(fetchPlacesAction.rejected, (state) => {
         state.requestStatus = RequestStatus.Failed;
       })
-      .addCase(postBokingAction.pending, (state) => {
+      .addCase(postBookingAction.pending, (state) => {
         state.requestFormStatus = RequestStatus.Loading;
       })
-      .addCase(postBokingAction.fulfilled, (state) => {
+      .addCase(postBookingAction.fulfilled, (state) => {
         state.requestFormStatus = RequestStatus.Success;
       })
-      .addCase(postBokingAction.rejected, (state) => {
+      .addCase(postBookingAction.rejected, (state) => {
         state.requestFormStatus = RequestStatus.Failed;
       });
   }

@@ -43,12 +43,12 @@ export const fetchPlacesAction = createAsyncThunk<Place[], string, {
   }
 );
 
-export const postBokingAction = createAsyncThunk<void, {formData: BookingFormData; offerId: string}, {
+export const postBookingAction = createAsyncThunk<void, {formData: BookingFormData; offerId: string}, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
-  'data/postBoking',
+  'data/postBooking',
   async ({formData, offerId}, {extra: api}) => {
     await api.post(`${APIRoute.Quest}/${offerId}${APIRoute.Booking}`, formData);
   }

@@ -1,11 +1,11 @@
 import './style.css';
-import { ReactEventHandler, useState } from 'react';
+import { ChangeEvent, ReactEventHandler, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { BookingFormData, PeopleMinMax, Slots } from '../../types';
 import { convertTime, getBookingDataProperties } from '../../utils';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
-import { postBokingAction } from '../../store/api-actions';
+import { postBookingAction } from '../../store/api-actions';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { AppRoute, RequestStatus } from '../../const';
 import { toast } from 'react-toastify';
@@ -19,6 +19,12 @@ type BookingFormProps = {
 }
 
 type ChangeHandler = ReactEventHandler<HTMLInputElement>
+
+type BookingInput = Omit<HTMLInputElement, 'name'> & {
+  name: keyof Omit<BookingFormData, 'placeId'>;
+};
+
+type BookingChangeEvent = ChangeEvent<BookingInput>;
 
 enum SubmitButtonText {
   Idle = 'Забронировать',
@@ -52,7 +58,7 @@ const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps)
   const navigate = useNavigate();
   const {today: todayItems, tomorrow: tomorrowItems} = places || {};
 
-  const handleFormDataChange: ChangeHandler = (evt) => {
+  const handleFormDataChange = (evt: BookingChangeEvent) => {
     const {name, value, checked} = evt.currentTarget;
 
     setFormData((prevForm) => ({
@@ -68,14 +74,14 @@ const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps)
 
   const handleFormSubmit: SubmitHandler<BookingFormData> = async (): Promise<void> => {
     try {
-      await dispatch(postBokingAction({formData, offerId})).unwrap();
+      await dispatch(postBookingAction({formData, offerId})).unwrap();
       navigate(AppRoute.MyQuests);
     } catch(err) {
       toast.error('Ошибка отправки');
     }
   };
 
-  const handleInputNumberWhell = (event: React.WheelEvent<HTMLInputElement>) => {
+  const handleInputNumberWheel = (event: React.WheelEvent<HTMLInputElement>) => {
     event.currentTarget.blur();
   };
 
@@ -182,7 +188,7 @@ const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps)
             {...register('peopleCount', { min, max })}
             onChange={handleFormDataChange}
             disabled={isSubmitting}
-            onWheel={handleInputNumberWhell}
+            onWheel={handleInputNumberWheel}
             aria-invalid={errors.peopleCount ? 'true' : 'false'}
           />
           {(errors.peopleCount?.type === 'min' || errors.peopleCount?.type === 'max') && <span className='booking-form__error' role="alert">{`От ${min} до ${max} человек`}</span>}
