@@ -1,7 +1,8 @@
 import './style.css';
-import { ChangeEvent, ReactEventHandler, useState } from 'react';
+import { ChangeEvent, ReactEventHandler, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import InputMask from 'react-input-mask';
 import { BookingFormData, PeopleMinMax, Slots } from '../../types';
 import { convertTime, getBookingDataProperties } from '../../utils';
 import { CheckboxAgreement } from '../../ui/checkbox-agreement/checkbox-agreement';
@@ -57,6 +58,38 @@ const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps)
 
   const navigate = useNavigate();
   const {today: todayItems, tomorrow: tomorrowItems} = places || {};
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isMounted) {
+      setFormData((prevForm) => ({
+        ...prevForm,
+
+        time: '',
+      }));
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [places]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isMounted) {
+      setFormData((prevForm) => ({
+        ...prevForm,
+
+        placeId,
+      }));
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [placeId]);
 
   const handleFormDataChange = (evt: BookingChangeEvent) => {
     const {name, value, checked} = evt.currentTarget;
@@ -164,7 +197,7 @@ const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps)
           <label className="custom-input__label" htmlFor="tel">
               Контактный телефон
           </label>
-          <input
+          <InputMask
             type="tel"
             id="tel"
             placeholder="Телефон"
@@ -173,6 +206,8 @@ const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps)
             onChange={handleFormDataChange}
             disabled={isSubmitting}
             aria-invalid={errors.phone ? 'true' : 'false'}
+            mask="+7 (999) 999-99-99"
+            maskChar="_"
           />
           {errors.phone?.type === 'pattern' && <span className='booking-form__error' role="alert">Номер формата +7 (000) 000-00-00 (Ру-формат)</span>}
         </div>

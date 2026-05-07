@@ -41,7 +41,7 @@ const Map = ({markers, activeMarker, onMarkerClick, mainPosition, zoom, height}:
         <MapContainer
           center={finalPosition as LatLngExpression}
           zoom={zoom ? zoom : 12}
-          scrollWheelZoom={false}
+          scrollWheelZoom
           style={{ height: `${height ? height : 529}px`, width: '100%' }}
         >
           <TileLayer
