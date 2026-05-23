@@ -60,35 +60,19 @@ const BookingForm = ({places, placeId, offerId, peopleMinMax}: BookingFormProps)
   const {today: todayItems, tomorrow: tomorrowItems} = places || {};
 
   useEffect(() => {
-    let isMounted = true;
+    setFormData((prevForm) => ({
+      ...prevForm,
 
-    if (isMounted) {
-      setFormData((prevForm) => ({
-        ...prevForm,
-
-        time: '',
-      }));
-    }
-
-    return () => {
-      isMounted = false;
-    };
+      time: '',
+    }));
   }, [places]);
 
   useEffect(() => {
-    let isMounted = true;
+    setFormData((prevForm) => ({
+      ...prevForm,
 
-    if (isMounted) {
-      setFormData((prevForm) => ({
-        ...prevForm,
-
-        placeId,
-      }));
-    }
-
-    return () => {
-      isMounted = false;
-    };
+      placeId,
+    }));
   }, [placeId]);
 
   const handleFormDataChange = (evt: BookingChangeEvent) => {

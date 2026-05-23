@@ -25,15 +25,7 @@ const BookingPage = (): JSX.Element => {
   }, [dispatch, offerId]);
 
   useEffect(() => {
-    let isMounted = true;
-
-    if (isMounted) {
-      setCurrentBookingId(places[0]?.id || '');
-    }
-
-    return () => {
-      isMounted = false;
-    };
+    setCurrentBookingId(places[0]?.id || '');
   }, [places]);
 
   const quest = useMemo(() => findQuestById(quests, offerId as string), [quests, offerId]);

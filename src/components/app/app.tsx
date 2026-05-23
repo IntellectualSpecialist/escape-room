@@ -23,9 +23,6 @@ const App = (): JSX.Element => {
 
   useEffect(() => {
     dispatch(fetchQuestsAction());
-  }, [dispatch]);
-
-  useEffect(() => {
     dispatch(checkAuthAction());
   }, [dispatch]);
 
