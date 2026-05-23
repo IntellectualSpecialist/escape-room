@@ -80,7 +80,6 @@ const ContactsPage = (): JSX.Element => (
                 markers={[MAIN_PLACE]}
                 mainPosition={MAIN_PLACE.location.coords}
                 zoom={16}
-                height={370}
               />
             </div>
           </div>

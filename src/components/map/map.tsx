@@ -9,7 +9,6 @@ type MapProps = {
   onMarkerClick?: (id: string) => void;
   mainPosition?: Coords;
   zoom?: number;
-  height?: number;
 }
 
 const TILE_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -28,7 +27,7 @@ const activeIcon = new Icon({
   iconAnchor: [12, 42]
 });
 
-const Map = ({markers, activeMarker, onMarkerClick, mainPosition, zoom, height}: MapProps): JSX.Element => {
+const Map = ({markers, activeMarker, onMarkerClick, mainPosition, zoom}: MapProps): JSX.Element => {
   const handleMarkerClick = (id: string): void => {
     onMarkerClick?.(id);
   };
@@ -37,31 +36,29 @@ const Map = ({markers, activeMarker, onMarkerClick, mainPosition, zoom, height}:
 
   return (
     <div className="map">
-      <div className="map__container" >
-        <MapContainer
-          center={finalPosition as LatLngExpression}
-          zoom={zoom ? zoom : 12}
-          scrollWheelZoom
-          style={{ height: `${height ? height : 529}px`, width: '100%' }}
-        >
-          <TileLayer
-            attribution={COPYRIGHT}
-            url={TILE_LAYER}
-          />
-          {markers.map((item) => {
-            const {id, location} = item;
-            const {coords} = location;
-            const icon = id === activeMarker?.id ? activeIcon : defaultIcon;
-            return (
-              <Marker key={id} position={coords as LatLngExpression} icon={icon} eventHandlers={{
-                click: () => {
-                  handleMarkerClick(id);
-                },
-              }}
-              />);
-          })}
-        </MapContainer>
-      </div>
+      <MapContainer
+        className="map__container"
+        center={finalPosition as LatLngExpression}
+        zoom={zoom ? zoom : 12}
+        scrollWheelZoom
+      >
+        <TileLayer
+          attribution={COPYRIGHT}
+          url={TILE_LAYER}
+        />
+        {markers.map((item) => {
+          const {id, location} = item;
+          const {coords} = location;
+          const icon = id === activeMarker?.id ? activeIcon : defaultIcon;
+          return (
+            <Marker key={id} position={coords as LatLngExpression} icon={icon} eventHandlers={{
+              click: () => {
+                handleMarkerClick(id);
+              },
+            }}
+            />);
+        })}
+      </MapContainer>
     </div>
   );
 };
